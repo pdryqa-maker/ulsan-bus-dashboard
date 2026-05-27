@@ -94,3 +94,16 @@ with tab2:
 st.divider()
 if st.button('🔄 새로고침'):
     st.rerun()
+
+# ---- 임시 디버그: raw XML 출력 ----
+with st.expander('🛠️ RAW XML 디버그 (확인 후 삭제)'):
+    try:
+        import requests, urllib.parse
+        API_KEY_DBG = urllib.parse.unquote(st.secrets['ULSAN_BIS_API_KEY'])
+        url = 'http://openapi.its.ulsan.kr/UlsanAPI/getBusArrivalInfo.xo'
+        params = {'serviceKey': API_KEY_DBG, 'stopid': '196040234', 'pageNo': 1, 'numOfRows': 10}
+        resp = requests.get(url, params=params, timeout=8)
+        st.write(f'HTTP 상태코드: {resp.status_code}')
+        st.code(resp.text[:3000], language='xml')
+    except Exception as e:
+        st.error(f'RAW 요청 오류: {e}')
